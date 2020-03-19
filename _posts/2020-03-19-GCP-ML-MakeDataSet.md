@@ -30,28 +30,31 @@ WHERE year > 2000
 - SELECT : 지정하는 정보의 값을 가져온다. 
 - WHERE : 2000년 이후 출산한 경우의 정보만 가져온다.
 - FARM_FINGERPRINT : YEAR,month 정보를 HASH값 (hashmonth)으로 만든다.
-* YEAR,month 정보를 HASH값으로 만들었기 대문에 같은 연도, 같은 달에 태어난 아기는 같은 HASH 값을 가지게 된다.
+  - YEAR,month 정보를 HASH값으로 만들었기 때문에 같은 연도, 같은 달에 태어난 아기는 같은 HASH 값을 가지게 된다.
 
 
 ### Create Data set
 불러온 데이터 `query` 를 TRAINING / EVALUATION SET로 나눈다.
-- 조건: 약12,000 training 샘플 / 약 3000 evaluation 샘플
-- 당연히 고르게 분포되어 있어야 하며 겹치지 않아야 한다.
+> 조건: 약12,000 training 샘플 / 약 3000 evaluation 샘플
+  당연히 고르게 분포되어 있어야 하며 겹치지 않아야 한다.
+
 ```
 sampling_query = "SELECT COUNT(weight_pounds) FROM (" + query + ") WHERE MOD(ABS(hashmonth), 10) < 8 AND RAND() < 0.0004"
 print(sampling_query)
 ```
 
-hashmonth를 통해 겹치지 않는 데이터셋을 만들수 있다.
-이 경우에는 hashmonth를 10을 나눈 나머지를 통해 구분하였는데, training/evaluation 샘플수의 비율이 4:1 정도이므로 
-`MOD(ABS(hashmonth), 10) < 8`  인 경우 training, `MOD(ABS(hashmonth), 10) >= 8` 인 경우 evaluation으로 분리 할 수 있다.
-또한 `RAND() < 0.0004`를 통해 데이터셋 별로 전체적인 샘플 수를 조절하였다.
-이 경우 RAND() < 0.0004 로 설정할 경우 10713개 정도로 나왔는데 따라서 training set으로 조건에 부합한다.
-마찬가지로 샘플의 수를 2배로 늘리고 싶다면 RAND() < 0.0008 로 설정하면 될 것이다.
+hashmonth를 통해 겹치지 않는 데이터셋을 만들수 있다.  
+이 경우에는 hashmonth를 10을 나눈 나머지를 통해 구분하였다.  
+ Training/evaluation 샘플수의 비율이 4:1 정도이므로  
+`MOD(ABS(hashmonth), 10) < 8`  인 경우 training,  
+`MOD(ABS(hashmonth), 10) >= 8` 인 경우 evaluation으로 분리 할 수 있다.  
+또한 `RAND() < 0.0004`를 통해 데이터셋 별로 전체적인 샘플 수를 조절하였다.  
+`RAND() < 0.0004` 로 설정할 경우 10713개 정도로 나왔는데 따라서 training set으로 조건에 부합한다.
+마찬가지로 샘플의 수를 2배로 늘리고 싶다면 `RAND() < 0.0008` 로 설정하면 될 것이다.
 
 - 정리 
-* `MOD(ABS(), )`  를 통해 각 데이터 셋의 비율 조절
-* `RAND()` 를 통해 데이터 셋 전체의 샘플 수 조절
+  - `MOD(ABS(), )`  :각 데이터 셋의 비율 조절
+  - `RAND()` :데이터 셋 전체의 샘플 수 조절
 
 ### Create data set in detail
 null 값을 갖는 경우를 제외하고 데이터를 불러온다.
