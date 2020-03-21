@@ -1,0 +1,3 @@
+ser-agent: *
+Allow: /
+Sitemap: http://seoy240.github.io/sitemap.xml
