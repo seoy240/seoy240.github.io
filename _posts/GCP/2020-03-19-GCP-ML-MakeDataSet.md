@@ -35,29 +35,23 @@ WHERE year > 2000
 
 ### Create Data set
 불러온 데이터 `query` 를 TRAINING / EVALUATION SET로 나눈다.
-> 조건: 약12,000 training 샘플 / 약 3000 evaluation 샘플
+> 조건: 약12,000 training 샘플 / 약 3000 evaluation 샘플  
   당연히 고르게 분포되어 있어야 하며 겹치지 않아야 한다.
 
 ```
 sampling_query = "SELECT COUNT(weight_pounds) FROM (" + query + ") WHERE MOD(ABS(hashmonth), 10) < 8 AND RAND() < 0.0004"
 print(sampling_query)
 ```
+  - `MOD(ABS(), )` :각 데이터 셋의 비율 조절
+    - Hashmonth를 통해 겹치지 않는 데이터셋을 만들수 있다. 이 경우에는 `MOD(ABS(),)` 를이용하였다. Training/evaluation 샘플수의 비율이 4:1 정도이므로 `MOD(ABS(hashmonth), 10) < 8`  인 경우 training,
+`MOD(ABS(hashmonth), 10) >= 8` 인 경우 evaluation으로 분리 할 수 있다. 
+  - `RAND()`:데이터 셋 전체의 샘플 수 조절  
+    - `RAND() <`를 통해서는 전체적인 샘플 수를 조절할 수 있다. `RAND() < 0.0004` 로 설정할 경우 10713개 정도로 나왔는데 따라서 training set으로 조건에 부합한다.
+마찬가지로 샘플의 수를 2배로 늘리고 싶다면 `RAND() < 0.0008` 로 설정하면 될 것이다.   
 
-hashmonth를 통해 겹치지 않는 데이터셋을 만들수 있다.  
-이 경우에는 hashmonth를 10을 나눈 나머지를 통해 구분하였다.  
- Training/evaluation 샘플수의 비율이 4:1 정도이므로  
-`MOD(ABS(hashmonth), 10) < 8`  인 경우 training,  
-`MOD(ABS(hashmonth), 10) >= 8` 인 경우 evaluation으로 분리 할 수 있다.  
-또한 `RAND() < 0.0004`를 통해 데이터셋 별로 전체적인 샘플 수를 조절하였다.  
-`RAND() < 0.0004` 로 설정할 경우 10713개 정도로 나왔는데 따라서 training set으로 조건에 부합한다.
-마찬가지로 샘플의 수를 2배로 늘리고 싶다면 `RAND() < 0.0008` 로 설정하면 될 것이다.
-
-- 정리 
-  - `MOD(ABS(), )`  :각 데이터 셋의 비율 조절
-  - `RAND()` :데이터 셋 전체의 샘플 수 조절
 
 ### Create data set in detail
-null 값을 갖는 경우를 제외하고 데이터를 불러온다.
+null 값이 존재하는 경우를 제외하고 데이터를 불러온다.
 ```
 # Create SQL query using natality data after the year 2000
 from google.cloud import bigquery
@@ -91,7 +85,7 @@ evaldf.to_csv('eval.csv', index=False, header=False)
 
 ### bash로 저장한 data set 정보 확인
 - wc: word count
-- head/tail : panda 함수와 비숫한 동작
+- head/tail : panda 함수와 비슷한 동작
 ```
 %%bash
 wc -l *.csv
