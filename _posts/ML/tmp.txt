@@ -1,0 +1,41 @@
+딥러닝
+ - 지도학습 : 정답있음 (ex) CNN, RNN
+ - 비지도학습 : 정답없음 (ex) autoencoder
+ - 강화학습 - agent / environment: 보상에 따른 학습 
+
+ 개발언어(뉴럴넷)
+ - Tensorflow: google 활용도가 높다. 여러가지 언어에 대한 신뢰도가 높다. 산업화 모델에서 유리 
+ - PyTorch: facebook 사용하기 쉽다.
+
+ 개발언어(ML)
+ - licikit-learn
+
+윈도우10 환경에서 딥러닝 환경 구축하기
+1. Pycharm 설치
+2. Anaconda 설치
+
+2.1 아나콘다 프로젝트 생성
+```
+conda create -n ex_folder python=3.7 numpy=1.16.4 pandas matplotlib seaborn scikit-learn
+```
+
+```
+conda env list
+```
+
+```
+activate ex_folder
+```
+
+
+선형회귀 (Linear Regression) - 가장 알맞은 선 긋기
+
+
+로지스틱 회귀 (Logistic Regression)
+
+1.cost function 설정
+2. 학습방법
+
+
+epoch 전체 데이터를 몇번 쓸거냐 (문제집 몇번 풀거냐)
+batch - 학습의 안정화 , 효율성 증가 (문제집 풀때 몇개씩 풀고 답 확인할거냐)
